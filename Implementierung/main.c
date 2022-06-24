@@ -1,6 +1,7 @@
 #include <stdio.h>  
 #include <stdint.h>  
 #include <time.h>
+
 void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
 void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
 
@@ -35,53 +36,69 @@ void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const ke
 void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     // TODO 
     return;
-}    
+}
+// encrypt the data n times in a row
+float repeatedIterateTest(int n, void (*f)(unsigned int, uint32_t[], uint32_t const[]), unsigned int r, uint32_t v[2], uint32_t const k[4]){
+
+    struct timespec start, end;
+    long res = 0.0;
+    for (int i = 0; i < n; i++){
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        (*f)(r, v, k);  
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        res += end.tv_nsec - start.tv_nsec;
+    }
+    return (float)res/n;
+}
+
+// encrypt the same data n times in a row
+float repeatedTest(int n, void (*f)(unsigned int, uint32_t[], uint32_t const[]), unsigned int r, uint32_t v[2], uint32_t const k[4]){
+    unsigned int a = r;
+    uint32_t b[2]={v[0],v[1]};  //{1,2}
+    uint32_t const c[4]={k[0],k[1],k[2],k[3]};  
+    struct timespec start, end;
+    long res = 0.0;
+    for (int i = 0; i < n; i++){
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        (*f)(a, b, c);  
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        res += end.tv_nsec - start.tv_nsec;
+    }
+    (*f)(r, v, k); 
+    return (float)res/n;
+}
 int main()  
 {  
+    int testrounds = 30;
     uint32_t v[2]={1,2};  //{1,2}
     uint32_t const k[4]={2,2,3,4};  
     unsigned int r=32;              //num_rounds建议取值为32  
     // v为要加密的数据是两个32位无符号整数  
     // k为加密解密密钥，为4个32位无符号整数，即密钥长度为128位  
     uint32_t testflag = 0;  // change this to 1 if you wanna test your optimized implementation.
-    struct timespec encryptStart, encryptEnd, decryptStart, decryptEnd;
+
+    float encryptTime, decryptTime;
     switch (testflag)
     {
     case 1:
         printf("Optimized version:\n");
         printf("Before encryption: %u %u\n",v[0],v[1]);
-        clock_gettime(CLOCK_MONOTONIC, &encryptStart);
-        encipherOptimized(r, v, k);  
-        clock_gettime(CLOCK_MONOTONIC, &encryptEnd);
+        printf ("Encryption done after average %f nanoseconds \n", repeatedTest(testrounds, encipherOptimized, r, v, k));
         printf("After encryption: %u %u\n",v[0],v[1]);
-        clock_gettime(CLOCK_MONOTONIC, &decryptStart);
-        decipherOptimized(r, v, k);
-        clock_gettime(CLOCK_MONOTONIC, &decryptEnd);
+        printf ("Decryption done after average %f nanoseconds \n", repeatedTest(testrounds, decipherOptimized, r, v, k));
         printf("After decryption: %u %u\n",v[0],v[1]);
         break;
     
     default:
         printf("Original version:\n");
         printf("Before encryption: %u %u\n",v[0],v[1]);
-        clock_gettime(CLOCK_MONOTONIC, &encryptStart);
-        encipher(r, v, k);  
-        clock_gettime(CLOCK_MONOTONIC, &encryptEnd);
+        printf ("Encryption done after average %f nanoseconds \n", repeatedTest(testrounds, encipher, r, v, k));
         printf("After encryption: %u %u\n",v[0],v[1]);
-        clock_gettime(CLOCK_MONOTONIC, &decryptStart);
-        decipher(r, v, k);
-        clock_gettime(CLOCK_MONOTONIC, &decryptEnd);
+        printf ("Decryption done after average %f nanoseconds \n", repeatedTest(testrounds, decipher, r, v, k));
         printf("After decryption: %u %u\n",v[0],v[1]);
         
         break;
     }
-    // double encryptTime = encryptEnd.tv_sec - encryptStart.tv_sec +
-    //     1e-9*(encryptEnd.tv_nsec - encryptStart.tv_nsec);
-    long encryptTime = encryptEnd.tv_nsec - encryptStart.tv_nsec;
-    long decryptTime = decryptEnd.tv_nsec - decryptStart.tv_nsec;
-    // double decryptTime = decryptEnd.tv_sec - decryptStart.tv_sec +
-    //     1e-9*(decryptEnd.tv_nsec - decryptStart.tv_nsec);
-    printf ("Encryption done after %ld nanoseconds \n", encryptTime);
-    printf ("Decryption done after %ld nanoseconds \n", decryptTime);
 
     return 0;  
 }  
