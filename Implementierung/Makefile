@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-std=gnu11 -Wall -Wextra -Wpedantic -ggdb
 
 all: main
-testassembly: main.c decipher.S encipher.S
+testassembly: main.c decipherOptimized.S encipherOptimized.S
 	$(CC) $(CFLAGS) -o $@ $^
 main: main.c 
 	$(CC) $(CFLAGS) -o $@ $^
