@@ -2,13 +2,13 @@
 #include <stdint.h>  
 #include <time.h>
 
-void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
-void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
+void encryptOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
+void decryptOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
 
 /* take 64 bits of data in v[0] and v[1] and 128 bits of key[0] - key[3] */  
 // use "make" to run the code
 // If you wanna test your assembly implementation, please use "make testassembly" instead.
-void encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {  
+void encrypt(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {  
     unsigned int i;  
     uint32_t v0=v[0], v1=v[1], sum=0, delta=0x9E3779B9;  
     for (i=0; i < num_rounds; i++) {  
@@ -18,7 +18,7 @@ void encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     }  
     v[0]=v0; v[1]=v1;  
 }  
-void decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {  
+void decrypt(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {  
     unsigned int i;  
     uint32_t v0=v[0], v1=v[1], delta=0x9E3779B9, sum=delta*num_rounds;  
     for (i=0; i < num_rounds; i++) {  
@@ -29,11 +29,11 @@ void decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     v[0]=v0; v[1]=v1;  
 }  
 
-void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
+void encryptOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     // TODO
     return;
 }
-void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
+void decryptOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     // TODO 
     return;
 }
@@ -83,18 +83,22 @@ int main()
     case 1:
         printf("Optimized version:\n");
         printf("Before encryption: %u %u\n",v[0],v[1]);
-        printf ("Encryption done after average %f nanoseconds \n", repeatedTest(testrounds, encipherOptimized, r, v, k));
+        printf ("Encryption done after average %f nanoseconds \n", 
+            repeatedTest(testrounds, encryptOptimized, r, v, k));
         printf("After encryption: %u %u\n",v[0],v[1]);
-        printf ("Decryption done after average %f nanoseconds \n", repeatedTest(testrounds, decipherOptimized, r, v, k));
+        printf ("Decryption done after average %f nanoseconds \n", 
+            repeatedTest(testrounds, decryptOptimized, r, v, k));
         printf("After decryption: %u %u\n",v[0],v[1]);
         break;
     
     default:
         printf("Original version:\n");
         printf("Before encryption: %u %u\n",v[0],v[1]);
-        printf ("Encryption done after average %f nanoseconds \n", repeatedTest(testrounds, encipher, r, v, k));
+        printf ("Encryption done after average %f nanoseconds \n", 
+            repeatedTest(testrounds, encrypt, r, v, k));
         printf("After encryption: %u %u\n",v[0],v[1]);
-        printf ("Decryption done after average %f nanoseconds \n", repeatedTest(testrounds, decipher, r, v, k));
+        printf ("Decryption done after average %f nanoseconds \n", 
+            repeatedTest(testrounds, decrypt, r, v, k));
         printf("After decryption: %u %u\n",v[0],v[1]);
         
         break;
