@@ -1,5 +1,7 @@
 #include <stdio.h>  
 #include <stdint.h>  
+void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
+void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
 
 /* take 64 bits of data in v[0] and v[1] and 128 bits of key[0] - key[3] */  
 
@@ -13,7 +15,6 @@ void encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     }  
     v[0]=v0; v[1]=v1;  
 }  
-
 void decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {  
     unsigned int i;  
     uint32_t v0=v[0], v1=v[1], delta=0x9E3779B9, sum=delta*num_rounds;  
@@ -24,7 +25,12 @@ void decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
     }  
     v[0]=v0; v[1]=v1;  
 }  
-
+// void encipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
+//     // TODO
+// }
+// void decipherOptimized(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]) {
+//     // TODO 
+// }
 int main()  
 {  
     uint32_t v[2]={1,2};  
@@ -32,10 +38,10 @@ int main()
     unsigned int r=32;//num_rounds建议取值为32  
     // v为要加密的数据是两个32位无符号整数  
     // k为加密解密密钥，为4个32位无符号整数，即密钥长度为128位  
-    printf("加密前原始数据：%u %u\n",v[0],v[1]);  
+    printf("Before encryption: %u %u\n",v[0],v[1]);  
     encipher(r, v, k);  
-    printf("加密后的数据：%u %u\n",v[0],v[1]);  
+    printf("After encryption: %u %u\n",v[0],v[1]);  
     decipher(r, v, k);  
-    printf("解密后的数据：%u %u\n",v[0],v[1]);  
+    printf("After decryption: %u %u\n",v[0],v[1]);  
     return 0;  
 }  
