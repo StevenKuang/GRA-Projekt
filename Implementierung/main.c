@@ -50,7 +50,6 @@ float repeatedIterateTest(int n, void (*f)(unsigned int, uint32_t[], uint32_t co
     }
     return (float)res/n;
 }
-// ignore this yeah
 // encrypt the same data n times in a row
 float repeatedTest(int n, void (*f)(unsigned int, uint32_t[], uint32_t const[]), unsigned int r, uint32_t v[2], uint32_t const k[4]){
     unsigned int a = r;
