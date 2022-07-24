@@ -1,0 +1,51 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            // "program": "${workspaceFolder}/Implementierung/unittest",
+            "program": "${workspaceFolder}/Implementierung/main",
+            "args": [
+                "-V2",
+                "test/input.txt",
+
+                // "-k",
+                // "2,3,4,5",
+
+            ],
+            // "args": [
+            //     "output.txt",
+            //     "-k",
+            //     "1,1,1,1",
+            //     "-i",
+            //     "1,1",
+            //     "-o",
+            //     "decryptcheck.txt"
+            // ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+
+    ]
+}
