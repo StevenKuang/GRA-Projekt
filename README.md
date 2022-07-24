@@ -1,5 +1,5 @@
 # Projektrepository
-## This is a group 109 cloned project repo for GRA Projekt 2022
+
 Beachten Sie, dass die äußere Form und die Einhaltung der Formalitäten wichtige Bewertungskriterien sind. Halten Sie sich deshalb **unbedingt** an folgende Ordnerstruktur und beachten Sie insbesondere Groß- und Kleinschreibung:
 
 - `Ausarbeitung/Ausarbeitung.pdf`: PDF Ihrer Ausarbeitung
